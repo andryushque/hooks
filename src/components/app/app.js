@@ -86,7 +86,8 @@ const Notification = () => {
   );
 };
 
-const PlanetInfo = ({ id }) => {
+// hook
+const usePlanetInfo = (id) => {
   const [planetName, setPlanetName] = useState("");
 
   useEffect(() => {
@@ -101,6 +102,12 @@ const PlanetInfo = ({ id }) => {
 
     return () => (cancelled = true);
   }, [id]);
+
+  return planetName;
+};
+
+const PlanetInfo = ({ id }) => {
+  const planetName = usePlanetInfo(id);
 
   return (
     <div>
