@@ -9,15 +9,16 @@ const App = () => {
   const decrement = () => setValue((prev) => prev - 1);
   const reset = () => setValue(0);
   const getVisible = () => setIsContentVisible(!isContentVisible);
-  const hideNotification = () => {
-    console.log("notification is hidden");
-    setIsNotificationVisible(false);
-  };
 
-  useEffect(() => {
-    const timeout = setTimeout(hideNotification, 5000);
-    return () => clearTimeout(timeout);
-  }, []);
+  // const hideNotification = () => {
+  //   console.log("notification is hidden");
+  //   setIsNotificationVisible(false);
+  // };
+
+  // useEffect(() => {
+  //   const timeout = setTimeout(hideNotification, 5000);
+  //   return () => clearTimeout(timeout);
+  // }, []);
 
   const contentVisibilityButton = (
     <div>
@@ -49,10 +50,17 @@ const App = () => {
     </>
   );
 
+  const planets = <PlanetInfo id={value} />;
+
   return (
     <div className="container-fluid p-4">
-      {contentVisibilityButton}
-      {isContentVisible ? content : null}
+      <div className="row">
+        <div className="col-md-6">
+          {contentVisibilityButton}
+          {isContentVisible ? content : null}
+        </div>
+        <div className="col-md-6">{planets}</div>
+      </div>
     </div>
   );
 };
@@ -74,6 +82,29 @@ const Notification = () => {
   return (
     <div className="alert alert-primary" role="alert">
       Wow!
+    </div>
+  );
+};
+
+const PlanetInfo = ({ id }) => {
+  const [planetName, setPlanetName] = useState("");
+
+  useEffect(() => {
+    let cancelled = false;
+    const url = `https://swapi.dev/api/planets/${id}`;
+
+    fetch(url)
+      .then((res) => res.json())
+      .then(
+        (data) => !cancelled && setPlanetName(data.name ? data.name : "<none>")
+      );
+
+    return () => (cancelled = true);
+  }, [id]);
+
+  return (
+    <div>
+      Planet #{id} is {planetName}
     </div>
   );
 };
